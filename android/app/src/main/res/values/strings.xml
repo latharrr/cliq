@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">CLIQ</string>
+    <string name="title_activity_main">CLIQ</string>
+    <string name="package_name">com.lpu.cliq</string>
+    <string name="custom_url_scheme">com.lpu.cliq</string>
+</resources>

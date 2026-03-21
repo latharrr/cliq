@@ -35,15 +35,16 @@ export function Navbar() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 h-16"
+      className="fixed top-0 left-0 right-0 z-50 w-full"
       style={{
+        paddingTop: 'env(safe-area-inset-top, 0px)', // Crucial for Native Android/iOS Status Bars
         background: 'rgba(10,10,15,0.8)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         borderBottom: '1px solid rgba(255,255,255,0.07)',
       }}
     >
-      <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-4 gap-4">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 gap-4 h-16">
         {/* Logo */}
         <Link href="/feed" className="flex items-center gap-2 shrink-0">
           <div
