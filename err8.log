@@ -1,0 +1,115 @@
+﻿node.exe : 
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (:String) [],    
+ RemoteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+> Build error occurred
+Error: Turbopack build 
+failed with 2 errors:
+./proxy.ts
+Proxy is missing 
+expected function 
+export name
+This function is what 
+Next.js runs for every 
+request handled by 
+this proxy (previously 
+called middleware).
+
+Why this happens:
+- You are migrating 
+from `middleware` to 
+`proxy`, but haven't 
+updated the exported 
+function.
+- The file exists but 
+doesn't export a 
+function.
+- The export is not a 
+function (e.g., an 
+object or constant).
+- There's a syntax 
+error preventing the 
+export from being 
+recognized.
+
+To fix it:
+- Ensure this file has 
+either a default or 
+"proxy" function 
+export.
+
+Learn more: https://nex
+tjs.org/docs/messages/m
+iddleware-to-proxy
+
+
+./components/providers.
+tsx:3:1
+Module not found: 
+Can't resolve 
+'@tanstack/react-query'
+  [90m1 |[0m 
+[32m'use client'[0m
+  [90m2 |[0m
+[31m[1m>[0m [90m3 
+|[0m [36mimport[0m 
+{ 
+[33mQueryClient[0m, 
+[33mQueryClientProvider
+[0m } [36mfrom[0m [
+32m'@tanstack/react-que
+ry'[0m
+  [90m  |[0m [31m[1
+m^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
+^^^^[0m
+  [90m4 |[0m 
+[36mimport[0m { 
+useState } 
+[36mfrom[0m 
+[32m'react'[0m
+  [90m5 |[0m
+  [90m6 |[0m 
+[36mexport[0m 
+[36mfunction[0m 
+[33mProviders[0m({ 
+children }: { 
+children: [33mReact[0
+m.[33mReactNode[0m 
+}) {
+
+
+
+Import trace:
+  Server Component:
+    ./components/provid
+ers.tsx
+    ./app/layout.tsx
+
+https://nextjs.org/docs
+/messages/module-not-fo
+und
+
+
+    at <unknown> (./com
+ponents/providers.tsx:3
+:1)
+    at <unknown> (https
+://nextjs.org/docs/mess
+ages/module-not-found)

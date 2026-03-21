@@ -1,0 +1,302 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model College {
+  id          String   @id @default(cuid())
+  name        String
+  emailDomain String   @unique
+  logoUrl     String?
+  createdAt   DateTime @default(now())
+  users       User[]
+
+  @@map("colleges")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  username          String    @unique
+  displayName       String
+  avatarUrl         String?
+  bio               String?
+  collegeId         String?
+  college           College?  @relation(fields: [collegeId], references: [id])
+  isAnonymousDefault Boolean  @default(false)
+  role              Role      @default(STUDENT)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  posts             Post[]
+  comments          Comment[]
+  votes             Vote[]
+  sentMessages      Message[] @relation("SentMessages")
+  receivedMessages  Message[] @relation("ReceivedMessages")
+  reports           Report[]
+  notifications     Notification[]
+  eventRsvps        EventRsvp[]
+  communityMembers  CommunityMember[]
+  createdCommunities Community[]
+  createdEvents     Event[]
+  createdNotices    Notice[]
+  interests         UserInterest[]
+
+  @@map("users")
+}
+
+model UserInterest {
+  userId    String
+  interest  String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, interest])
+  @@map("user_interests")
+}
+
+enum Role {
+  STUDENT
+  MODERATOR
+  ADMIN
+}
+
+model Community {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  bannerUrl   String?
+  iconUrl     String?
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  posts    Post[]
+  members  CommunityMember[]
+  events   Event[]
+
+  @@map("communities")
+}
+
+model CommunityMember {
+  userId      String
+  communityId String
+  role        String   @default("member")
+  joinedAt    DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  @@id([userId, communityId])
+  @@map("community_members")
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  authorId    String
+  communityId String?
+  content     String
+  isAnonymous Boolean  @default(false)
+  imageUrls   String[]
+  tags        String[]
+  upvotes     Int      @default(0)
+  downvotes   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  community Community? @relation(fields: [communityId], references: [id])
+  comments  Comment[]
+  votes     Vote[]
+  reports   Report[]
+
+  @@map("posts")
+}
+
+model Comment {
+  id              String   @id @default(cuid())
+  postId          String
+  authorId        String
+  content         String
+  isAnonymous     Boolean  @default(false)
+  upvotes         Int      @default(0)
+  parentCommentId String?
+  createdAt       DateTime @default(now())
+
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parentComment Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies       Comment[] @relation("CommentReplies")
+  votes         Vote[]
+  reports       Report[]
+
+  @@map("comments")
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String?
+  commentId String?
+  type      VoteType
+  createdAt DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+  @@map("votes")
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  location    String
+  isOnline    Boolean  @default(false)
+  startTime   DateTime
+  endTime     DateTime?
+  communityId String?
+  createdById String
+  createdAt   DateTime @default(now())
+
+  community Community?  @relation(fields: [communityId], references: [id])
+  createdBy User        @relation(fields: [createdById], references: [id])
+  rsvps     EventRsvp[]
+
+  @@map("events")
+}
+
+model EventRsvp {
+  userId  String
+  eventId String
+  status  RsvpStatus @default(INTERESTED)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@id([userId, eventId])
+  @@map("event_rsvps")
+}
+
+enum RsvpStatus {
+  GOING
+  INTERESTED
+  NOT_GOING
+}
+
+model Notice {
+  id          String         @id @default(cuid())
+  title       String
+  body        String
+  category    NoticeCategory @default(ADMINISTRATIVE)
+  isUrgent    Boolean        @default(false)
+  isPinned    Boolean        @default(false)
+  createdById String
+  createdAt   DateTime       @default(now())
+
+  createdBy User @relation(fields: [createdById], references: [id])
+
+  @@map("notices")
+}
+
+enum NoticeCategory {
+  ACADEMIC
+  ADMINISTRATIVE
+  CULTURAL
+  URGENT
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  content    String
+  imageUrl   String?
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model Report {
+  id         String       @id @default(cuid())
+  reporterId String
+  postId     String?
+  commentId  String?
+  reason     ReportReason
+  status     ReportStatus @default(PENDING)
+  createdAt  DateTime     @default(now())
+
+  reporter  User     @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  MISINFORMATION
+  EXPLICIT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  ACTIONED
+  DISMISSED
+}
+
+model Hashtag {
+  id        String   @id @default(cuid())
+  tag       String   @unique
+  postCount Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@map("hashtags")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  refId     String?
+  message   String
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  UPVOTE
+  COMMENT
+  DM
+  EVENT
+  NOTICE
+  REPORT_ACTIONED
+}
