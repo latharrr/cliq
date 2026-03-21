@@ -90,7 +90,7 @@ export default function LandingPage() {
         </p>
 
         {/* CTA */}
-        <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-200">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 animate-fade-in-up delay-200">
           <Link
             href="/auth"
             className="btn-primary text-base px-8 py-3"
@@ -98,6 +98,17 @@ export default function LandingPage() {
           >
             Join with College Email <ArrowRight size={18} />
           </Link>
+          <a
+            href="/cliq-latest.apk"
+            download
+            className="btn-ghost text-base px-8 py-3 border flex items-center gap-2 transition-all hover:bg-[#7c3aed]/10"
+            style={{ 
+              borderColor: 'rgba(124,58,237,0.3)',
+              color: '#a78bfa'
+            }}
+          >
+            Download Android APK (Beta)
+          </a>
           <Link
             href="/feed"
             className="btn-ghost text-base px-8 py-3 border"
