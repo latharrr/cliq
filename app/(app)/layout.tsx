@@ -10,8 +10,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <LeftSidebar />
       <RightSidebar />
       <main
-        className="pt-16 pb-20 lg:pb-4 lg:pl-60 xl:pr-64"
-        style={{ minHeight: '100vh' }}
+        className="pb-20 lg:pb-4 lg:pl-60 xl:pr-64"
+        style={{ 
+          minHeight: '100vh',
+          paddingTop: 'calc(4rem + env(safe-area-inset-top, 0px))' 
+        }}
       >
         <div className="max-w-2xl mx-auto px-4 py-6">
           {children}
