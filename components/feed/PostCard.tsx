@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import {
   ArrowUp, ArrowDown, MessageCircle, Share2, MoreHorizontal,
   UserCircle2, Flag, Eye, EyeOff
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { createClient } from '@/lib/supabase/client'
 
 interface Post {
   id: string
@@ -38,17 +39,61 @@ interface PostCardProps {
 
 export function PostCard({ post, onVote }: PostCardProps) {
   const [vote, setVote] = useState<'UP' | 'DOWN' | null>(null)
-  const [voteCount, setVoteCount] = useState(post.upvotes - post.downvotes)
+  const [voteCount, setVoteCount] = useState(post.upvotes - post.downvotes || 0)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null)
+  
+  const supabase = createClient()
 
-  const handleVote = (type: 'UP' | 'DOWN') => {
+  useEffect(() => {
+    let mounted = true
+    const initVoteState = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user && mounted) setUserId(user.id)
+      
+      const { data } = await supabase.from('upvotes').select('userId, value').eq('postId', post.id)
+      if (data && mounted) {
+        const total = data.reduce((acc: number, v: any) => acc + v.value, 0)
+        // If data exists, it acts as the immediate authoritative source of truth
+        if (data.length > 0) setVoteCount(total)
+        
+        if (user) {
+          const myVote = data.find((v: any) => v.userId === user.id)
+          if (myVote) setVote(myVote.value === 1 ? 'UP' : 'DOWN')
+        }
+      }
+    }
+    initVoteState()
+    return () => { mounted = false }
+  }, [post.id, supabase])
+
+  const handleVote = async (type: 'UP' | 'DOWN') => {
+    // 1. Optimistic UI updates
     const prev = vote
     const newVote = prev === type ? null : type
     setVote(newVote)
+    
     const delta = type === 'UP' ? 1 : -1
     const revert = prev === type ? -delta : prev ? delta * 2 : delta
     setVoteCount(c => c + revert)
     onVote?.(post.id, type)
+
+    // 2. Database Sync
+    if (!userId) {
+       toast.error("You must be logged in to interact mathematically.")
+       return
+    }
+
+    // Always clear the existing vote for this user on this post to avoid Prisma compound-key conflicts
+    await supabase.from('upvotes').delete().match({ userId, postId: post.id })
+    if (newVote) {
+      await supabase.from('upvotes').insert({
+        id: crypto.randomUUID(),
+        userId,
+        postId: post.id,
+        value: newVote === 'UP' ? 1 : -1
+      })
+    }
   }
 
   const handleShare = async () => {

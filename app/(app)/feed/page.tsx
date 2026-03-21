@@ -45,7 +45,7 @@ export default function FeedPage() {
   const supabase = createClient()
 
   const fetchPosts = useCallback(async () => {
-    setLoading(true)
+    // Provide visually smooth hot-swapping without firing skeleton loading states on tab switch
     let query = supabase
       .from('posts')
       .select(`
