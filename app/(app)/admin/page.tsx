@@ -37,6 +37,13 @@ export default function AdminPage() {
     if (!user) { router.push('/'); return }
     setActiveUserId(user.id)
 
+    const { data: userData } = await supabase.from('users').select('role').eq('id', user.id).single()
+    if (userData?.role !== 'ADMIN') {
+       toast.error('ACCESS DENIED: Administrator clearance required.', { icon: '🛡️' })
+       router.push('/feed')
+       return
+    }
+
     const startOfDay = new Date()
     startOfDay.setHours(0, 0, 0, 0)
 
@@ -165,10 +172,6 @@ export default function AdminPage() {
               Unfettered moderation megastructure
             </p>
           </div>
-        </div>
-        
-        <div className="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 flex items-center gap-2">
-          <AlertTriangle size={14} /> Global Bypass Active
         </div>
       </div>
 
