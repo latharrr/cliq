@@ -41,11 +41,18 @@ export default function SearchPage() {
       setLoading(true)
       const searchTerm = `%${debouncedQuery}%`
 
+      const { data: { user } } = await supabase.auth.getUser()
+      let userUniversity = 'Lovely Professional University'
+      if (user) {
+        const { data: profile } = await supabase.from('users').select('university').eq('id', user.id).single()
+        if (profile?.university) userUniversity = profile.university
+      }
+
       const [postsRes, commsRes, usersRes, eventsRes] = await Promise.all([
-        supabase.from('posts').select(`*, author:users(displayName, username, avatarUrl), community:communities(name, slug), _count:comments(count)`).ilike('content', searchTerm).order('createdAt', { ascending: false }).limit(6),
-        supabase.from('communities').select('*').ilike('name', searchTerm).eq('isApproved', true).limit(4),
-        supabase.from('users').select('*').ilike('displayName', searchTerm).limit(4),
-        supabase.from('events').select('*').ilike('title', searchTerm).order('startTime', { ascending: true }).limit(4)
+        supabase.from('posts').select(`*, author:users!inner(displayName, username, avatarUrl, university), community:communities(name, slug), _count:comments(count)`).ilike('content', searchTerm).eq('author.university', userUniversity).order('createdAt', { ascending: false }).limit(6),
+        supabase.from('communities').select('*, createdBy:users!inner(university)').ilike('name', searchTerm).eq('isApproved', true).eq('createdBy.university', userUniversity).limit(4),
+        supabase.from('users').select('*').ilike('displayName', searchTerm).eq('university', userUniversity).limit(4),
+        supabase.from('events').select('*, createdBy:users!inner(university)').ilike('title', searchTerm).eq('createdBy.university', userUniversity).order('startTime', { ascending: true }).limit(4)
       ])
 
       setResults({

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, Users, Calendar, MessageCircle, Search } from 'lucide-react'
+import { useScrollDirection } from '@/lib/hooks/useScrollDirection'
 
 const mobileLinks = [
   { href: '/feed', label: 'Feed', icon: Home },
@@ -14,11 +15,15 @@ const mobileLinks = [
 
 export function BottomNav() {
   const pathname = usePathname()
+  const { scrollDirection } = useScrollDirection()
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around h-16 px-2"
+      className={`lg:hidden fixed left-0 right-0 z-50 flex items-center justify-around h-16 px-2 transition-transform duration-300 ease-in-out ${
+        scrollDirection === 'down' ? 'translate-y-full' : 'translate-y-0'
+      }`}
       style={{
+        bottom: 0,
         background: 'rgba(10,10,15,0.92)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',

@@ -19,16 +19,23 @@ export default function EventsPage() {
   const loadEvents = useCallback(async () => {
     setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
-    if (user) setUserId(user.id)
+    let userUniversity = 'Lovely Professional University'
+    if (user) {
+      setUserId(user.id)
+      const { data: profile } = await supabase.from('users').select('university').eq('id', user.id).single()
+      if (profile?.university) userUniversity = profile.university
+    }
 
     // Using explicit camelCase mapping for relational table properties mapped by Prisma
     const { data, error } = await supabase
       .from('events')
       .select(`
         *,
+        createdBy:users!inner(university),
         community:communities!events_communityId_fkey(name, slug),
         rsvps:event_rsvps(userId, status)
       `)
+      .eq('createdBy.university', userUniversity)
       .order('startTime', { ascending: true })
 
     if (data) setEvents(data)

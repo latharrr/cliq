@@ -16,9 +16,17 @@ export default function NoticesPage() {
 
   const loadNotices = useCallback(async () => {
     setLoading(true)
+    const { data: { user } } = await supabase.auth.getUser()
+    let userUniversity = 'Lovely Professional University'
+    if (user) {
+      const { data: profile } = await supabase.from('users').select('university').eq('id', user.id).single()
+      if (profile?.university) userUniversity = profile.university
+    }
+
     const { data, error } = await supabase
       .from('notices')
-      .select('*, createdBy:users(displayName)')
+      .select('*, createdBy:users!inner(displayName, university)')
+      .eq('createdBy.university', userUniversity)
       .order('isPinned', { ascending: false }) // Pinned top
       .order('createdAt', { ascending: false })
 

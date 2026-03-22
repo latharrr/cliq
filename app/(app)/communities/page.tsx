@@ -27,13 +27,22 @@ export default function CommunitiesPage() {
 
   const fetchCommunities = useCallback(async () => {
     setLoading(true)
+    const { data: { user } } = await supabase.auth.getUser()
+    let userUniversity = 'Lovely Professional University'
+    if (user) {
+      const { data: profile } = await supabase.from('users').select('university').eq('id', user.id).single()
+      if (profile?.university) userUniversity = profile.university
+    }
+
     const { data, error } = await supabase
       .from('communities')
       .select(`
         *,
+        createdBy:users!inner(university),
         _count:community_members(count)
       `)
       .eq('isApproved', true)
+      .eq('createdBy.university', userUniversity)
       .order('createdAt', { ascending: false })
 
     if (data) {

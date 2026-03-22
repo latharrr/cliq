@@ -5,8 +5,10 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 import { Bell, Search, Zap, X, LogOut, Settings, User } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { useScrollDirection } from '@/lib/hooks/useScrollDirection'
 
 export function Navbar() {
+  const { scrollDirection, isTop } = useScrollDirection()
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
@@ -35,8 +37,11 @@ export function Navbar() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 w-full"
+      className={`fixed left-0 right-0 z-50 w-full transition-transform duration-300 ease-in-out ${
+        scrollDirection === 'down' && !isTop ? '-translate-y-full' : 'translate-y-0'
+      }`}
       style={{
+        top: 0,
         paddingTop: 'env(safe-area-inset-top, 0px)', // Crucial for Native Android/iOS Status Bars
         background: 'rgba(10,10,15,0.8)',
         backdropFilter: 'blur(20px)',
