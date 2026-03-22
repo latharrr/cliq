@@ -11,6 +11,7 @@ import { createClient } from '@/lib/supabase/client'
 
 interface Post {
   id: string
+  authorId: string
   content: string
   isAnonymous: boolean
   imageUrls?: string[]
@@ -93,6 +94,19 @@ export function PostCard({ post, onVote }: PostCardProps) {
         postId: post.id,
         type: newVote
       })
+
+      // Send notification to author if upvote and not self-vote
+      if (newVote === 'UP' && post.authorId !== userId) {
+        const { data: { user } } = await supabase.auth.getUser()
+        await supabase.from('notifications').insert({
+          id: crypto.randomUUID(),
+          userId: post.authorId,
+          type: 'UPVOTE',
+          refId: post.id,
+          message: `${user?.user_metadata?.displayName || 'Someone'} upvoted your post.`,
+          isRead: false
+        })
+      }
     }
   }
 

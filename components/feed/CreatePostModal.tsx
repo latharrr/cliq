@@ -5,6 +5,40 @@ import { X, Image, Tag, EyeOff, Eye, Send, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import toast from 'react-hot-toast'
 
+const compressImage = async (file: File): Promise<File> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = (event) => {
+      const img = new window.Image()
+      img.src = event.target?.result as string
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const MAX_WIDTH = 1200
+        const MAX_HEIGHT = 1200
+        let { width, height } = img
+
+        if (width > height) {
+          if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH }
+        } else {
+          if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT }
+        }
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx?.drawImage(img, 0, 0, width, height)
+        canvas.toBlob((blob) => {
+          if (blob) {
+            resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' }))
+          } else { resolve(file) }
+        }, 'image/jpeg', 0.8)
+      }
+      img.onerror = () => resolve(file)
+    }
+    reader.onerror = () => resolve(file)
+  })
+}
+
 interface CreatePostModalProps {
   onClose: () => void
   onPostCreated?: () => void
@@ -18,6 +52,7 @@ export function CreatePostModal({ onClose, onPostCreated, defaultCommunityId, de
   const [community, setCommunity] = useState(defaultCommunityId || '')
   const [liveCommunities, setLiveCommunities] = useState<any[]>([])
   const [isAnon, setIsAnon] = useState(false)
+  const [images, setImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
 
@@ -36,6 +71,31 @@ export function CreatePostModal({ onClose, onPostCreated, defaultCommunityId, de
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { toast.error('Not authenticated'); setLoading(false); return }
 
+    const uploadedUrls: string[] = []
+    if (images.length > 0) {
+      for (const rawFile of images) {
+        const file = await compressImage(rawFile)
+        const fileExt = file.name.split('.').pop() || 'jpg'
+        const fileName = `${crypto.randomUUID()}.${fileExt}`
+        
+        const { error: uploadError } = await supabase.storage
+          .from('post-images')
+          .upload(fileName, file)
+
+        if (uploadError) {
+          toast.error(`Failed to upload ${file.name}: ${uploadError.message}`)
+          setLoading(false)
+          return
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('post-images')
+          .getPublicUrl(fileName)
+          
+        uploadedUrls.push(publicUrl)
+      }
+    }
+
     const tagList = tags.split(',').map(t => t.trim().replace('#', '')).filter(Boolean)
 
     const now = new Date().toISOString()
@@ -46,7 +106,7 @@ export function CreatePostModal({ onClose, onPostCreated, defaultCommunityId, de
       isAnonymous: isAnon,
       tags: tagList,
       communityId: community || null,
-      imageUrls: [],
+      imageUrls: uploadedUrls,
       updatedAt: now,
     })
 
@@ -122,6 +182,24 @@ export function CreatePostModal({ onClose, onPostCreated, defaultCommunityId, de
             </div>
           </div>
 
+          {/* Image Previews */}
+          {images.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {images.map((file, i) => (
+                <div key={i} className="relative w-20 h-20 shrink-0 border border-white/10 rounded-xl overflow-hidden">
+                  <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setImages(prev => prev.filter((_, idx) => idx !== i))}
+                    className="absolute top-1 right-1 bg-black/60 rounded-full p-1 text-white hover:bg-black/80 transition"
+                  >
+                    <X size={10} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Community */}
           <div>
             <label className="text-xs font-bold mb-1.5 block uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
@@ -172,13 +250,23 @@ export function CreatePostModal({ onClose, onPostCreated, defaultCommunityId, de
           {/* Actions */}
           <div className="flex items-center justify-between pt-1">
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="btn-ghost p-2 rounded-lg text-sm"
-                title="Attach image (coming soon)"
+              <label
+                className="btn-ghost p-2 rounded-lg text-sm cursor-pointer hover:bg-white/10 transition"
+                title="Attach images"
               >
                 <Image size={16} />
-              </button>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={e => {
+                    if (e.target.files) {
+                      setImages(prev => [...prev, ...Array.from(e.target.files!)].slice(0, 4))
+                    }
+                  }}
+                  className="hidden"
+                />
+              </label>
             </div>
             <button
               type="submit"

@@ -100,7 +100,7 @@ export function Navbar() {
           </button>
 
           {/* Notifications */}
-          <Link href="/feed" className="relative btn-ghost p-2" aria-label="Notifications">
+          <Link href="/notifications" className="relative btn-ghost p-2" aria-label="Notifications">
             <Bell size={18} />
             <span
               className="absolute top-1 right-1 h-2 w-2 rounded-full"
