@@ -15,27 +15,16 @@ export default function LandingPage() {
     <main className="min-h-screen flex flex-col">
       {/* Navbar strip */}
       <header
-        className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-6 md:px-12"
-        style={{
-          background: 'rgba(10,10,15,0.7)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.07)',
-        }}
+        className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-6 md:px-12 bg-[#0a0a0f]/70 backdrop-blur-xl border-b border-white/5"
       >
         <div className="flex items-center gap-2">
           <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}
+            className="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-violet-600 to-indigo-500"
           >
-            <Zap size={16} className="text-white" fill="white" />
+            <Zap size={16} className="text-white fill-white" />
           </div>
           <span
-            className="font-bold text-xl"
-            style={{
-              background: 'linear-gradient(135deg, #a78bfa, #22d3ee)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
+            className="font-bold text-xl bg-gradient-to-br from-purple-400 to-cyan-400 bg-clip-text text-transparent"
           >
             Cliq
           </span>
@@ -49,12 +38,7 @@ export default function LandingPage() {
       <section className="flex-1 flex flex-col items-center justify-center text-center pt-32 pb-20 px-6">
         {/* Badge */}
         <div
-          className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full text-xs font-semibold animate-fade-in"
-          style={{
-            background: 'rgba(124,58,237,0.15)',
-            border: '1px solid rgba(124,58,237,0.3)',
-            color: '#a78bfa',
-          }}
+          className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full text-xs font-semibold animate-fade-in bg-violet-600/15 border border-violet-600/30 text-purple-400"
         >
           <Star size={11} fill="currentColor" />
           Lovely Professional University · Verified Campus Network
@@ -62,16 +46,11 @@ export default function LandingPage() {
 
         {/* Headline */}
         <h1
-          className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight mb-6 animate-fade-in-up"
-          style={{ maxWidth: '800px', color: 'var(--foreground)' }}
+          className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight mb-6 animate-fade-in-up max-w-[800px] text-[var(--foreground)]"
         >
           Your campus{' '}
           <span
-            style={{
-              background: 'linear-gradient(135deg, #a78bfa, #22d3ee)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
+            className="bg-gradient-to-br from-purple-400 to-cyan-400 bg-clip-text text-transparent"
           >
             social layer
           </span>
@@ -81,8 +60,7 @@ export default function LandingPage() {
         </h1>
 
         <p
-          className="text-lg md:text-xl mb-10 max-w-xl animate-fade-in-up delay-100"
-          style={{ color: 'var(--muted)', lineHeight: 1.7 }}
+          className="text-lg md:text-xl mb-10 max-w-xl animate-fade-in-up delay-100 text-[var(--muted)] leading-[1.7]"
         >
           Reddit meets Discord, built exclusively for{' '}
           <strong style={{ color: 'var(--foreground)' }}>verified students</strong>{' '}
@@ -101,18 +79,13 @@ export default function LandingPage() {
           <a
             href="/cliq-latest.apk"
             download
-            className="btn-ghost text-base px-8 py-3 border flex items-center gap-2 transition-all hover:bg-[#7c3aed]/10"
-            style={{ 
-              borderColor: 'rgba(124,58,237,0.3)',
-              color: '#a78bfa'
-            }}
+            className="btn-ghost text-base px-8 py-3 border border-violet-600/30 text-purple-400 flex items-center gap-2 transition-all hover:bg-violet-600/10"
           >
             Download Android APK (Beta)
           </a>
           <Link
             href="/feed"
-            className="btn-ghost text-base px-8 py-3 border"
-            style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+            className="btn-ghost text-base px-8 py-3 border border-white/10"
           >
             Browse Feed
           </Link>
@@ -145,11 +118,7 @@ export default function LandingPage() {
 
         {/* App preview card */}
         <div
-          className="glass mt-16 w-full max-w-2xl p-4 animate-fade-in-up delay-400"
-          style={{
-            background: 'rgba(255,255,255,0.03)',
-            boxShadow: '0 0 60px rgba(124,58,237,0.15)',
-          }}
+          className="glass mt-16 w-full max-w-2xl p-4 animate-fade-in-up delay-400 bg-white/5 shadow-[0_0_60px_rgba(124,58,237,0.15)]"
         >
           <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/5">
             <div className="w-2 h-2 rounded-full bg-red-500 opacity-60" />
@@ -227,12 +196,7 @@ export default function LandingPage() {
       {/* CTA strip */}
       <section className="py-16 px-6 text-center">
         <div
-          className="glass max-w-2xl mx-auto p-10"
-          style={{
-            background: 'linear-gradient(135deg, rgba(124,58,237,0.1), rgba(34,211,238,0.05))',
-            border: '1px solid rgba(124,58,237,0.2)',
-            boxShadow: '0 0 40px rgba(124,58,237,0.1)',
-          }}
+          className="glass max-w-2xl mx-auto p-10 bg-gradient-to-br from-violet-600/10 to-cyan-400/5 border border-violet-600/20 shadow-[0_0_40px_rgba(124,58,237,0.1)]"
         >
           <h2
             className="text-2xl md:text-3xl font-bold mb-4"

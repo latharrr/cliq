@@ -1,8 +1,9 @@
+require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const supabase = createClient(
-  'https://atcfcwtfyjrcvuzpgria.supabase.co',
-  'sb_publishable_HZvgAPjGUj_w2M5lhfqOXg_YLnKaGW4'
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
 async function test() {
