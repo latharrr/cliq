@@ -192,7 +192,7 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
                 replies={getReplies(comment.id)} 
                 allComments={comments}
                 userId={userId!} 
-                onReply={(id, author) => { setReplyingTo({ id, author }); document.getElementById('comment-input')?.focus() }}
+                onReply={(id: string, author: string) => { setReplyingTo({ id, author }); document.getElementById('comment-input')?.focus() }}
                 onVote={handleCommentVote}
               />
             ))
