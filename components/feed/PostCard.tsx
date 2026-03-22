@@ -51,15 +51,15 @@ export function PostCard({ post, onVote }: PostCardProps) {
       const { data: { user } } = await supabase.auth.getUser()
       if (user && mounted) setUserId(user.id)
       
-      const { data } = await supabase.from('upvotes').select('userId, value').eq('postId', post.id)
+      const { data } = await supabase.from('votes').select('userId, type').eq('postId', post.id)
       if (data && mounted) {
-        const total = data.reduce((acc: number, v: any) => acc + v.value, 0)
+        const total = data.reduce((acc: number, v: any) => acc + (v.type === 'UP' ? 1 : -1), 0)
         // If data exists, it acts as the immediate authoritative source of truth
         if (data.length > 0) setVoteCount(total)
         
         if (user) {
           const myVote = data.find((v: any) => v.userId === user.id)
-          if (myVote) setVote(myVote.value === 1 ? 'UP' : 'DOWN')
+          if (myVote) setVote(myVote.type)
         }
       }
     }
@@ -85,13 +85,13 @@ export function PostCard({ post, onVote }: PostCardProps) {
     }
 
     // Always clear the existing vote for this user on this post to avoid Prisma compound-key conflicts
-    await supabase.from('upvotes').delete().match({ userId, postId: post.id })
+    await supabase.from('votes').delete().match({ userId, postId: post.id })
     if (newVote) {
-      await supabase.from('upvotes').insert({
+      await supabase.from('votes').insert({
         id: crypto.randomUUID(),
         userId,
         postId: post.id,
-        value: newVote === 'UP' ? 1 : -1
+        type: newVote
       })
     }
   }
