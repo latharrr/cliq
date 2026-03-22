@@ -56,9 +56,9 @@ export default function AuthPage() {
         .single()
 
       if (!profile?.username) {
-        router.push('/onboarding')
+        window.location.href = '/onboarding'
       } else {
-        router.push('/feed')
+        window.location.href = '/feed'
       }
     }
   }

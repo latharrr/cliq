@@ -64,7 +64,7 @@ export default function OnboardingPage() {
       console.error('Save interests error:', interestsError)
     }
     toast.success('Welcome to Cliq! 🎉')
-    router.push('/feed')
+    window.location.href = '/feed'
   }
 
   return (
