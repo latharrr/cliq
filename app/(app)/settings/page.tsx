@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { User, Bell, Shield, Moon, Monitor, Edit2, LogOut, Loader2 } from 'lucide-react'
+import { User, Bell, Shield, Moon, Monitor, Edit2, LogOut, Loader2, Sun } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { useTheme } from 'next-themes'
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('Account')
@@ -21,6 +22,7 @@ export default function SettingsPage() {
   
   const supabase = createClient()
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
 
   const loadProfile = useCallback(async () => {
     setLoading(true)
@@ -228,13 +230,40 @@ export default function SettingsPage() {
           )}
 
           {activeTab === 'Appearance' && (
-            <div className="glass p-6 animate-fade-in-up rounded-2xl border border-white/5">
+            <div className="glass p-6 animate-fade-in-up rounded-2xl border" style={{ borderColor: 'var(--border)' }}>
               <h3 className="font-bold text-[11px] uppercase tracking-wider mb-4" style={{ color: 'var(--muted)' }}>Theme Injection</h3>
               <div className="flex gap-4">
-                <button className="flex-1 py-4 flex-col rounded-xl border-2 flex items-center justify-center gap-2 font-black transition-all shadow-md bg-transparent" style={{ borderColor: '#7c3aed', color: '#a78bfa' }}>
+                <button 
+                  onClick={() => setTheme('dark')}
+                  className="flex-1 py-4 flex-col rounded-xl border flex items-center justify-center gap-2 font-black transition-all shadow-md"
+                  style={{ 
+                    borderColor: theme === 'dark' ? 'var(--violet)' : 'var(--border)', 
+                    color: theme === 'dark' ? 'var(--violet-light)' : 'var(--muted)',
+                    background: theme === 'dark' ? 'rgba(124,58,237,0.05)' : 'transparent'
+                  }}
+                >
                   <Moon size={20} className="mb-1" /> Dark Void
                 </button>
-                <button onClick={() => toast('System mapping restricted in Demo')} className="flex-1 py-4 flex-col rounded-xl border flex items-center justify-center gap-2 text-sm font-bold transition-all hover:bg-white/5" style={{ borderColor: 'rgba(255,255,255,0.08)', background: 'transparent', color: 'var(--muted)' }}>
+                <button 
+                  onClick={() => setTheme('light')}
+                  className="flex-1 py-4 flex-col rounded-xl border flex items-center justify-center gap-2 text-sm font-bold transition-all shadow-md"
+                  style={{ 
+                    borderColor: theme === 'light' ? 'var(--violet)' : 'var(--border)', 
+                    color: theme === 'light' ? 'var(--foreground)' : 'var(--muted)',
+                    background: theme === 'light' ? 'var(--card)' : 'transparent'
+                  }}
+                >
+                  <Sun size={20} className="mb-1" /> Light Canvas
+                </button>
+                <button 
+                  onClick={() => setTheme('system')}
+                  className="flex-1 py-4 flex-col rounded-xl border flex items-center justify-center gap-2 text-sm font-bold transition-all shadow-md"
+                  style={{ 
+                    borderColor: theme === 'system' ? 'var(--violet)' : 'var(--border)', 
+                    color: theme === 'system' ? 'var(--foreground)' : 'var(--muted)',
+                    background: theme === 'system' ? 'var(--card)' : 'transparent'
+                  }}
+                >
                   <Monitor size={20} className="mb-1 opacity-50" /> System Linked
                 </button>
               </div>

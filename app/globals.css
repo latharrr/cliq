@@ -2,6 +2,23 @@
 
 /* ─── Design tokens ──────────────────────────────────────────── */
 :root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --card: rgba(255, 255, 255, 0.8);
+  --card-hover: rgba(255, 255, 255, 0.95);
+  --border: rgba(0, 0, 0, 0.06);
+  --border-strong: rgba(0, 0, 0, 0.15);
+  --violet: #6d28d9;
+  --violet-light: #8b5cf6;
+  --violet-glow: rgba(124, 58, 237, 0.15);
+  --cyan: #06b6d4;
+  --cyan-glow: rgba(34, 211, 238, 0.15);
+  --radius: 1rem;
+  --blur: 16px;
+}
+
+.dark {
   --background: #0a0a0f;
   --foreground: #f1f5f9;
   --muted: #94a3b8;
@@ -14,8 +31,6 @@
   --violet-glow: rgba(124, 58, 237, 0.25);
   --cyan: #22d3ee;
   --cyan-glow: rgba(34, 211, 238, 0.2);
-  --radius: 1rem;
-  --blur: 16px;
 }
 
 /* ─── Global reset ───────────────────────────────────────────── */
@@ -54,7 +69,7 @@ body {
 }
 
 .glass-strong {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--card);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-strong);

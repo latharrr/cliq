@@ -249,24 +249,24 @@ function CommentNode({ comment, replies, allComments, userId, onReply, onVote }:
   const score = comment.votes?.reduce((acc: number, v: any) => acc + (v.type === 'UP' ? 1 : -1), 0) || 0
 
   return (
-    <div className="flex gap-3 animate-fade-in-up">
-      <div className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center bg-white/5 mt-1">
+    <div className="flex gap-3 animate-fade-in-up mt-2">
+      <div className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center mt-0.5" style={{ background: 'var(--card)' }}>
         {comment.isAnonymous ? (
-          <UserCircle2 size={16} className="text-gray-400" />
+          <UserCircle2 size={16} style={{ color: 'var(--muted)' }} />
         ) : (
-          <span className="text-xs font-bold text-white">{authorName[0]?.toUpperCase()}</span>
+          <span className="text-xs font-bold" style={{ color: 'var(--foreground)' }}>{authorName[0]?.toUpperCase()}</span>
         )}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="glass p-3 rounded-2xl rounded-tl-sm mb-1.5">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-bold text-gray-200">{authorName}</span>
-            <span className="text-[10px] text-gray-500">{formatDistanceToNow(new Date(comment.createdAt))} ago</span>
+      <div className="flex-1 min-w-0 pt-0.5">
+        <div className="mb-1">
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>{authorName}</span>
+            <span className="text-[11px] font-medium" style={{ color: 'var(--muted)' }}>• {formatDistanceToNow(new Date(comment.createdAt))}</span>
           </div>
-          <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">{comment.content}</p>
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--foreground)' }}>{comment.content}</p>
         </div>
         
-        <div className="flex items-center gap-4 px-2 mb-3">
+        <div className="flex items-center gap-4 py-1 mb-1">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => onVote(comment.id, 'UP', myVote)}
@@ -283,14 +283,15 @@ function CommentNode({ comment, replies, allComments, userId, onReply, onVote }:
           </div>
           <button 
             onClick={() => onReply(comment.id, authorName)}
-            className="text-xs font-medium text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-1"
+            className="text-xs font-bold hover:underline transition-colors flex items-center gap-1"
+            style={{ color: 'var(--muted)' }}
           >
             Reply
           </button>
         </div>
 
         {replies.length > 0 && (
-          <div className="pl-4 border-l-2 border-white/5 flex flex-col gap-3 mt-2">
+          <div className="pl-4 border-l-2 flex flex-col gap-2 mt-2" style={{ borderColor: 'var(--border)' }}>
             {replies.map((reply: any) => (
               <CommentNode 
                 key={reply.id} 
