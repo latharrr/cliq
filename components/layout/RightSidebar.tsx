@@ -24,7 +24,7 @@ const activeCommunities = [
 
 export function RightSidebar() {
   return (
-    <aside className="hidden xl:flex flex-col w-64 fixed right-0 top-16 bottom-0 overflow-y-auto py-4 px-3"
+    <aside className="hidden xl:flex flex-col w-64 fixed right-0 top-16 bottom-0 z-40 overflow-y-auto py-4 px-3"
       style={{ borderLeft: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* Trending */}

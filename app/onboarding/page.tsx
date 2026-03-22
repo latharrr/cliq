@@ -16,6 +16,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1)
   const [displayName, setDisplayName] = useState('')
   const [username, setUsername] = useState('')
+  const [university, setUniversity] = useState('Lovely Professional University')
   const [interests, setInterests] = useState<string[]>([])
   const [isAnonDefault, setIsAnonDefault] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -42,6 +43,7 @@ export default function OnboardingPage() {
       email: user.email,
       displayName,
       username: username.toLowerCase().replace(/\s+/g, '_'),
+      university,
       isAnonymousDefault: isAnonDefault,
       role: 'STUDENT',
       updatedAt: new Date().toISOString(),
@@ -134,6 +136,19 @@ export default function OnboardingPage() {
                       maxLength={20}
                     />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--foreground)' }}>
+                    College / University
+                  </label>
+                  <select
+                    value={university}
+                    onChange={e => setUniversity(e.target.value)}
+                    className="input-glass"
+                  >
+                    <option style={{ color: 'black' }} value="Lovely Professional University">Lovely Professional University</option>
+                    <option style={{ color: 'black' }} value="Others">Others</option>
+                  </select>
                 </div>
                 <button
                   onClick={() => { if (displayName && username) setStep(2) }}

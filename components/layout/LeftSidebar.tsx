@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import {
   Home, Users, Calendar, Megaphone, MessageCircle,
   Search, Settings, Hash, ChevronRight, Plus
@@ -27,10 +29,21 @@ const defaultCommunities = [
 
 export function LeftSidebar() {
   const pathname = usePathname()
+  const [university, setUniversity] = useState('Lovely Professional University')
+  const supabase = createClient()
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        supabase.from('users').select('university').eq('id', user.id).single()
+          .then(({ data }) => setUniversity(data?.university || 'Lovely Professional University'))
+      }
+    })
+  }, [])
 
   return (
     <aside
-      className="hidden lg:flex flex-col w-60 fixed left-0 top-16 bottom-0 overflow-y-auto py-4 px-3"
+      className="hidden lg:flex flex-col w-60 fixed left-0 top-16 bottom-0 z-40 overflow-y-auto py-4 px-3"
       style={{ borderRight: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* Main nav */}
@@ -98,7 +111,7 @@ export function LeftSidebar() {
             className="text-xs font-medium mb-1"
             style={{ color: 'var(--foreground)' }}
           >
-            Lovely Professional University
+            {university}
           </p>
           <p className="text-xs" style={{ color: 'var(--muted)' }}>
             Verified campus network

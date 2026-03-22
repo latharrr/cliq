@@ -91,7 +91,7 @@ export default function AuthPage() {
           </h1>
           <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
             {step === 'email'
-              ? `Sign in with your @${ALLOWED_DOMAIN} email`
+              ? `Sign in with your college email address`
               : `Enter the 6-digit code sent to ${email}`}
           </p>
         </div>
@@ -117,7 +117,7 @@ export default function AuthPage() {
                   <input
                     id="email"
                     type="email"
-                    placeholder={`you@${ALLOWED_DOMAIN}`}
+                    placeholder="you@college.edu"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
@@ -126,7 +126,7 @@ export default function AuthPage() {
                   />
                 </div>
                 <p className="text-xs mt-1.5" style={{ color: 'var(--muted)' }}>
-                  Only @{ALLOWED_DOMAIN} addresses accepted
+                  Use your official college email address
                 </p>
               </div>
               <button

@@ -42,15 +42,23 @@ export default function FeedPage() {
   const supabase = createClient()
 
   const fetchPosts = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    let userUniversity = 'Lovely Professional University'
+    if (user) {
+      const { data: profile } = await supabase.from('users').select('university').eq('id', user.id).single()
+      if (profile?.university) userUniversity = profile.university
+    }
+
     // Provide visually smooth hot-swapping without firing skeleton loading states on tab switch
     let query = supabase
       .from('posts')
       .select(`
         *,
-        author:users(displayName, username, avatarUrl),
+        author:users!inner(displayName, username, avatarUrl),
         community:communities(name, slug),
         _count:comments(count)
       `)
+      .eq('author.university', userUniversity)
       .limit(20)
 
     if (filter === 'new') query = query.order('createdAt', { ascending: false })
