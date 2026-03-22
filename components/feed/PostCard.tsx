@@ -120,23 +120,23 @@ export function PostCard({ post, onVote }: PostCardProps) {
 
   return (
     <article
-      className="glass glass-hover p-4 mb-3 animate-fade-in-up"
-      style={{ position: 'relative' }}
+      className="px-4 py-5 border-b animate-fade-in-up transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+      style={{ borderColor: 'var(--border)' }}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           {/* Avatar */}
           <div
-            className="w-9 h-9 rounded-full shrink-0 flex items-center justify-center text-sm font-bold"
+            className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center text-[13px] font-bold"
             style={{
               background: post.isAnonymous
-                ? 'rgba(255,255,255,0.08)'
-                : 'linear-gradient(135deg, #7c3aed, #22d3ee)',
+                ? 'var(--border)'
+                : 'linear-gradient(135deg, var(--violet-light), var(--cyan))',
             }}
           >
             {post.isAnonymous ? (
-              <UserCircle2 size={18} style={{ color: 'var(--muted)' }} />
+              <UserCircle2 size={20} style={{ color: 'var(--muted)' }} />
             ) : (
               <span className="text-white">
                 {post.author?.displayName?.[0]?.toUpperCase() ?? 'U'}
@@ -144,36 +144,34 @@ export function PostCard({ post, onVote }: PostCardProps) {
             )}
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>
                 {post.isAnonymous ? 'Anonymous' : (post.author?.displayName ?? 'Unknown')}
+              </span>
+              <span className="text-[13px] font-medium" style={{ color: 'var(--muted)' }}>
+                · {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }).replace('about', '').trim()}
               </span>
               {post.isAnonymous && (
                 <span
-                  className="text-xs px-2 py-0.5 rounded-full"
+                  className="text-[10px] px-2 py-0.5 rounded-full ml-1"
                   style={{
-                    background: 'rgba(255,255,255,0.06)',
+                    background: 'var(--border)',
                     color: 'var(--muted)',
-                    border: '1px solid rgba(255,255,255,0.08)',
                   }}
                 >
-                  <EyeOff size={9} className="inline mr-1" />
-                  anon
+                  <EyeOff size={10} className="inline mr-1" />anon
                 </span>
               )}
               {post.community && (
                 <a
                   href={`/communities/${post.community.slug}`}
-                  className="text-xs transition-colors hover:underline"
-                  style={{ color: '#22d3ee' }}
+                  className="text-xs transition-colors hover:underline ml-1"
+                  style={{ color: 'var(--cyan)' }}
                 >
                   #{post.community.name}
                 </a>
               )}
             </div>
-            <p className="text-xs" style={{ color: 'var(--muted)' }}>
-              {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-            </p>
           </div>
         </div>
 
@@ -181,10 +179,11 @@ export function PostCard({ post, onVote }: PostCardProps) {
         <div className="relative">
           <button
             onClick={() => setMenuOpen(v => !v)}
-            className="btn-ghost p-1.5 rounded-lg"
+            className="p-1 rounded-full hover:bg-white/10"
+            style={{ color: 'var(--muted)' }}
             aria-label="Post options"
           >
-            <MoreHorizontal size={16} />
+            <MoreHorizontal size={18} />
           </button>
           {menuOpen && (
             <div
@@ -210,9 +209,9 @@ export function PostCard({ post, onVote }: PostCardProps) {
       </div>
 
       {/* Content */}
-      <div className="mb-3">
+      <div className="mb-3 pl-0 sm:pl-[52px]">
         <p
-          className="text-sm leading-relaxed whitespace-pre-wrap"
+          className="text-[15px] leading-relaxed whitespace-pre-wrap"
           style={{ color: 'var(--foreground)' }}
         >
           {post.content}
@@ -222,11 +221,9 @@ export function PostCard({ post, onVote }: PostCardProps) {
       {/* Images */}
       {post.imageUrls && post.imageUrls.length > 0 && (
         <div
-          className={`grid gap-2 mb-3 ${
+          className={`grid gap-1 mb-3 pl-0 sm:pl-[52px] ${
             post.imageUrls.length === 1
               ? 'grid-cols-1'
-              : post.imageUrls.length === 2
-              ? 'grid-cols-2'
               : 'grid-cols-2'
           }`}
         >
@@ -235,8 +232,8 @@ export function PostCard({ post, onVote }: PostCardProps) {
               key={i}
               src={url}
               alt={`Post image ${i + 1}`}
-              className="rounded-xl object-cover w-full"
-              style={{ maxHeight: post.imageUrls!.length === 1 ? '400px' : '200px' }}
+              className="rounded-xl object-cover w-full border border-white/5 shadow-sm"
+              style={{ maxHeight: post.imageUrls!.length === 1 ? '450px' : '220px' }}
               loading="lazy"
             />
           ))}
@@ -259,51 +256,43 @@ export function PostCard({ post, onVote }: PostCardProps) {
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-1 mt-2">
+      <div className="flex items-center gap-6 mt-1 pl-0 sm:pl-[52px]">
         {/* Upvote */}
         <button
           onClick={() => handleVote('UP')}
-          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg transition-all text-xs font-semibold"
-          style={{
-            background: vote === 'UP' ? 'rgba(124,58,237,0.2)' : 'transparent',
-            color: vote === 'UP' ? '#a78bfa' : 'var(--muted)',
-            border: vote === 'UP' ? '1px solid rgba(124,58,237,0.3)' : '1px solid transparent',
-          }}
+          className="flex items-center gap-1.5 transition-all text-sm font-semibold"
+          style={{ color: vote === 'UP' ? 'var(--violet-light)' : 'var(--muted)' }}
         >
-          <ArrowUp size={14} />
-          <span style={{ color: scoreColor }}>{score}</span>
+          <ArrowUp size={20} />
+          <span>{score}</span>
         </button>
 
         {/* Downvote */}
         <button
           onClick={() => handleVote('DOWN')}
-          className="flex items-center gap-1 px-2 py-1.5 rounded-lg transition-all"
-          style={{
-            background: vote === 'DOWN' ? 'rgba(248,113,113,0.1)' : 'transparent',
-            color: vote === 'DOWN' ? '#f87171' : 'var(--muted)',
-          }}
+          className="flex items-center gap-1.5 transition-all"
+          style={{ color: vote === 'DOWN' ? '#f87171' : 'var(--muted)' }}
         >
-          <ArrowDown size={14} />
+          <ArrowDown size={20} />
         </button>
 
         {/* Comments */}
         <a
           href={`/post/${post.id}`}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all hover:bg-white/5 text-xs"
+          className="flex items-center gap-1.5 transition-all text-[13px] font-semibold"
           style={{ color: 'var(--muted)' }}
         >
-          <MessageCircle size={14} />
+          <MessageCircle size={19} />
           {post._count?.comments ?? 0}
         </a>
 
         {/* Share */}
         <button
           onClick={handleShare}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all hover:bg-white/5 text-xs"
+          className="flex items-center gap-1.5 transition-all text-sm ml-auto"
           style={{ color: 'var(--muted)' }}
         >
-          <Share2 size={14} />
-          Share
+          <Share2 size={19} />
         </button>
       </div>
     </article>

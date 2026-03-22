@@ -14,24 +14,21 @@ const FILTERS = [
 
 type Filter = typeof FILTERS[number]['key']
 
-// Skeleton post card
 function PostSkeleton() {
   return (
-    <div className="glass p-4 mb-3">
+    <div className="p-4 border-b border-[var(--border)]">
       <div className="flex items-center gap-3 mb-3">
-        <div className="skeleton w-9 h-9 rounded-full" />
+        <div className="skeleton w-10 h-10 rounded-full" />
         <div>
-          <div className="skeleton h-3 w-28 mb-1.5" />
-          <div className="skeleton h-2.5 w-16" />
+          <div className="skeleton h-3.5 w-32 mb-1.5" />
         </div>
       </div>
-      <div className="skeleton h-3.5 w-full mb-2" />
-      <div className="skeleton h-3.5 w-4/5 mb-2" />
-      <div className="skeleton h-3.5 w-2/3 mb-4" />
-      <div className="flex gap-3">
-        <div className="skeleton h-7 w-16 rounded-lg" />
-        <div className="skeleton h-7 w-16 rounded-lg" />
-        <div className="skeleton h-7 w-20 rounded-lg" />
+      <div className="skeleton h-3.5 w-full mb-2 ml-0 sm:ml-12" />
+      <div className="skeleton h-3.5 w-[80%] mb-4 ml-0 sm:ml-12" />
+      <div className="flex gap-6 mt-4 ml-0 sm:ml-12">
+        <div className="skeleton h-5 w-8 rounded-md" />
+        <div className="skeleton h-5 w-8 rounded-md" />
+        <div className="skeleton h-5 w-8 rounded-md" />
       </div>
     </div>
   )
@@ -96,21 +93,21 @@ export default function FeedPage() {
   return (
     <>
       {/* Create post prompt */}
-      <div className="glass glass-hover p-3 mb-4 flex items-center gap-3 cursor-pointer" onClick={() => setShowCreatePost(true)}>
+      <div className="p-3 mb-2 flex items-center gap-3 cursor-pointer border-b" style={{ borderColor: 'var(--border)' }} onClick={() => setShowCreatePost(true)}>
         <div
-          className="w-9 h-9 rounded-full shrink-0 flex items-center justify-center text-sm font-bold"
-          style={{ background: 'linear-gradient(135deg, #7c3aed, #22d3ee)' }}
+          className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center text-sm font-bold shadow-sm"
+          style={{ background: 'linear-gradient(135deg, var(--violet-light), var(--cyan))', color: 'white' }}
         >
           C
         </div>
         <div
-          className="flex-1 input-glass text-sm py-2 cursor-pointer text-left"
+          className="flex-1 text-[15px] cursor-pointer text-left pl-1"
           style={{ color: 'var(--muted)' }}
         >
-          What&apos;s happening on campus?
+          What's happening on campus?
         </div>
-        <button className="btn-primary py-2 px-3 text-sm shrink-0" onClick={() => setShowCreatePost(true)}>
-          <Plus size={15} /> Post
+        <button className="bg-[var(--violet)] text-white font-bold py-1.5 px-4 rounded-full text-sm shrink-0 shadow-md active:scale-95 transition-transform" onClick={() => setShowCreatePost(true)}>
+          Post
         </button>
       </div>
 
@@ -160,11 +157,11 @@ export default function FeedPage() {
       {/* Mobile FAB */}
       <button
         onClick={() => setShowCreatePost(true)}
-        className="lg:hidden fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg animate-pulse-glow"
-        style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}
+        className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+        style={{ background: 'var(--violet)' }}
         aria-label="Create post"
       >
-        <Plus size={22} className="text-white" />
+        <Plus size={24} className="text-white" />
       </button>
 
       {/* Create post modal */}
