@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cliq
 
-## Getting Started
+A campus social network for Lovely Professional University (LPU), limited to members verified with an institutional email.
 
-First, run the development server:
+Live: https://cliq-ruddy.vercel.app
+
+## Features
+
+- Communities: interest-based groups (tech, memes, sports and more)
+- Private DMs: one-to-one chat between classmates
+- Campus events: discover, RSVP and create events
+- Official notices: verified college announcements
+- Real-time feed for posts and reactions
+
+## Stack
+
+Next.js 16, React 19, TypeScript, Tailwind 4, Supabase (`@supabase/ssr`), Prisma, TanStack Query, Framer Motion, Web Push, and Capacitor (Android).
+
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. Supabase and Prisma need their own environment variables, which this repo does not document yet. Never commit real keys.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev     # dev server
+npm run build   # production build
+npm run start   # run the production build
+npm run lint    # eslint
+```
 
-## Learn More
+## Author
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deepanshu Lathar - https://deepanshulathar.com - [@latharrr](https://github.com/latharrr)
